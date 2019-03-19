@@ -20,6 +20,11 @@ class Robot:
         self.v = 0
         self.w = 0
         self.theta = 0
+        self.B = numpy.matrix([[Robot.DELTA_T * math.cos(self.theta), 0], \
+                            [Robot.DELTA_T * math.sin(self.theta), 0], \
+                            [0, Robot.DELTA_T]])
+        self.u = numpy.matrix([[self.v], [self.w]])
+        self.A = numpy.identity(3)
 
     def increment_v(self):
         self.v = self.v + Robot.SPEED_INCREMENT
@@ -38,11 +43,9 @@ class Robot:
         self.w = 0
 
     def velocity_based_model(self):
-        out = numpy.matrix([[self.x], [self.y], [self.theta]]) \
-            + numpy.matrix([[Robot.DELTA_T * math.cos(self.theta), 0], \
-                            [Robot.DELTA_T * math.sin(self.theta), 0], \
-                            [0, Robot.DELTA_T]]) \
-            * numpy.matrix([[self.v], [self.w]])
+        out = self.A * numpy.matrix([[self.x], [self.y], [self.theta]]) \
+            + self.B \
+            * self.u
         self.x = out[0, 0]
         self.y = out[1, 0]
         self.theta = out[2, 0]
