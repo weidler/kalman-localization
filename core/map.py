@@ -9,14 +9,17 @@ class Beacon:
         self.x = x
         self.y = y
 
-    def distance_to(self, x, y):
-        numpy.linalg.norm(numpy.array([self.x, self.y]) - numpy.array([x, y]))
+    def distance_to(self, x, y) -> float:
+        return numpy.linalg.norm(numpy.array([self.x, self.y]) - numpy.array([x, y]))
 
 
 class Map:
 
     def __init__(self):
         self.beacons = []
+
+    def add_beacon(self, beacon: Beacon):
+        self.beacons.append(beacon)
 
     def add_beacons(self, beacons: List[Beacon]):
         self.beacons.extend(beacons)

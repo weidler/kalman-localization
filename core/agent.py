@@ -3,11 +3,11 @@ import numpy
 
 
 class Robot:
-    SPEED_INCREMENT = 0.1
-    SPEED_DECREMENT = 0.1
-    ANGLE_INCREMENT = 0.01
-    ANGLE_DECREMENT = 0.01
-    DELTA_T = 0.001
+    SPEED_INCREMENT = 0.3
+    SPEED_DECREMENT = 0.3
+    ANGLE_INCREMENT = 0.1
+    ANGLE_DECREMENT = 0.1
+    DELTA_T = 0.01
 
     def __init__(self, radius, x=0, y=0):
         self.radius = radius

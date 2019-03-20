@@ -1,3 +1,4 @@
+import itertools
 import math
 import sys
 import time
@@ -8,10 +9,11 @@ from PyQt5.QtGui import QPainter, QPen, QBrush, QColor
 from PyQt5.QtWidgets import QApplication, QWidget, QGraphicsView, QGraphicsScene, QMainWindow
 
 from core.agent import Robot
-from core.map import Map
+from core.map import Map, Beacon
 from view.frame import DrawingFrame
 
 DELTA_T = 0.01
+BEACON_INDICATOR_DISTANCE = 300
 
 
 def draw_robot(painter: QPainter, robot: Robot):
@@ -28,27 +30,54 @@ def draw_robot(painter: QPainter, robot: Robot):
 
     painter.drawEllipse(QPoint(robot.x, robot.y), robot.radius, robot.radius)
     pen.setStyle(Qt.SolidLine)
+    pen.setCapStyle(Qt.RoundCap)
     painter.setPen(pen)
     painter.drawLine(robot.x, robot.y, robot_nose_x, robot_nose_y)
 
 
 def draw_beacons(painter: QPainter, map: Map):
-    pass
+    pen = QPen()
+    pen.setBrush(Qt.red)
+    pen.setWidth(6)
+    pen.setCapStyle(Qt.RoundCap)
+    painter.setPen(pen)
+
+    for beacon in map.beacons:
+        painter.drawPoint(beacon.x, beacon.y)
+
+
+def draw_beacon_indicators(painter: QPainter, map: map, robot: Robot):
+    pen = QPen()
+    pen.setStyle(Qt.SolidLine)
+    pen.setBrush(Qt.blue)
+    pen.setWidth(2)
+    painter.setPen(pen)
+
+    for beacon in map.beacons:
+        if beacon.distance_to(robot.x, robot.y) <= BEACON_INDICATOR_DISTANCE:
+            painter.drawLine(beacon.x, beacon.y, robot.x, robot.y)
+
 
 class App(QMainWindow):
 
     def __init__(self):
         super(QMainWindow, self).__init__()
         self.setWindowTitle('Kalman Localization')
-        self.resize(800, 500)
+        self.resize(800, 800)
 
         self.robot = Robot(20, 100, 100)
+        self.map = Map()
+
+        for x, y in itertools.product(range(200, 601, 200), range(200, 601, 200)):
+            self.map.add_beacon(Beacon(x, y))
 
     def paintEvent(self, e):
         qp = QPainter()
         qp.begin(self)
         qp.setRenderHint(QPainter.Antialiasing)
+        draw_beacon_indicators(qp, self.map, self.robot)
         draw_robot(qp, self.robot)
+        draw_beacons(qp, self.map)
         qp.end()
 
     def keyPressEvent(self, e):
@@ -69,6 +98,10 @@ class App(QMainWindow):
         # STOP
         if e.key() == QtCore.Qt.Key_X:
             self.robot.stop()
+
+        # STOP
+        if e.key() == QtCore.Qt.Key_Escape:
+            exit()
 
     def animate(self):
         self.robot.velocity_based_model()
