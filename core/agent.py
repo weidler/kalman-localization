@@ -1,8 +1,5 @@
 import math
 import numpy
-import pygame
-
-from pygame import gfxdraw
 
 
 class Robot:
@@ -52,6 +49,9 @@ class Robot:
 
 
 if __name__ == "__main__":
+    import pygame
+    from pygame import gfxdraw
+
     pygame.init()  # initialize pygame
     pygame.font.init()
 
@@ -119,5 +119,5 @@ if __name__ == "__main__":
 
         step += 1
 
-pygame.quit()
-quit()
+    pygame.quit()
+    quit()
