@@ -5,15 +5,13 @@ import time
 
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtCore import QPoint, Qt, QTimer
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPainterPath
 from PyQt5.QtWidgets import QApplication, QWidget, QGraphicsView, QGraphicsScene, QMainWindow
 
 from core.agent import Robot
 from core.map import Map, Beacon
+from settings import SETTINGS
 from view.frame import DrawingFrame
-
-DELTA_T = 0.01
-BEACON_INDICATOR_DISTANCE = 300
 
 
 def draw_robot(painter: QPainter, robot: Robot):
@@ -22,11 +20,11 @@ def draw_robot(painter: QPainter, robot: Robot):
 
     pen = QPen()
     pen.setStyle(Qt.DashLine)
-    pen.setBrush(Qt.black)
+    pen.setBrush(SETTINGS["COLOR_ROBOT"].darker(400))
     pen.setWidth(3)
 
     painter.setPen(pen)
-    painter.setBrush(Qt.green)
+    painter.setBrush(SETTINGS["COLOR_ROBOT"])
 
     painter.drawEllipse(QPoint(robot.x, robot.y), robot.radius, robot.radius)
     pen.setStyle(Qt.SolidLine)
@@ -37,7 +35,7 @@ def draw_robot(painter: QPainter, robot: Robot):
 
 def draw_beacons(painter: QPainter, map: Map):
     pen = QPen()
-    pen.setBrush(Qt.red)
+    pen.setBrush(SETTINGS["COLOR_BEACON"])
     pen.setWidth(6)
     pen.setCapStyle(Qt.RoundCap)
     painter.setPen(pen)
@@ -49,13 +47,24 @@ def draw_beacons(painter: QPainter, map: Map):
 def draw_beacon_indicators(painter: QPainter, map: map, robot: Robot):
     pen = QPen()
     pen.setStyle(Qt.SolidLine)
-    pen.setBrush(Qt.blue)
+    pen.setBrush(SETTINGS["COLOR_BEACON"])
     pen.setWidth(2)
     painter.setPen(pen)
 
     for beacon in map.beacons:
-        if beacon.distance_to(robot.x, robot.y) <= BEACON_INDICATOR_DISTANCE:
+        if beacon.distance_to(robot.x, robot.y) <= SETTINGS["BEACON_INDICATOR_DISTANCE"]:
             painter.drawLine(beacon.x, beacon.y, robot.x, robot.y)
+
+
+def draw_trace(painter: QPainter, trace: QPainterPath):
+    pen = QPen()
+    pen.setStyle(Qt.SolidLine)
+    pen.setBrush(SETTINGS["COLOR_TRACE"])
+    pen.setWidth(2)
+    painter.setPen(pen)
+    painter.setBrush(Qt.NoBrush)
+
+    painter.drawPath(trace)
 
 
 class App(QMainWindow):
@@ -67,6 +76,9 @@ class App(QMainWindow):
 
         self.robot = Robot(20, 100, 100)
         self.map = Map()
+        self.trace = QPainterPath()
+        self.trace.moveTo(QPoint(self.robot.x, self.robot.y))
+        self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]
 
         for x, y in itertools.product(range(200, 601, 200), range(200, 601, 200)):
             self.map.add_beacon(Beacon(x, y))
@@ -76,8 +88,10 @@ class App(QMainWindow):
         qp.begin(self)
         qp.setRenderHint(QPainter.Antialiasing)
         draw_beacon_indicators(qp, self.map, self.robot)
-        draw_robot(qp, self.robot)
         draw_beacons(qp, self.map)
+        draw_trace(qp, self.trace)
+        draw_robot(qp, self.robot)
+
         qp.end()
 
     def keyPressEvent(self, e):
@@ -105,6 +119,14 @@ class App(QMainWindow):
 
     def animate(self):
         self.robot.velocity_based_model()
+
+        if self.trace_smooth_level == SETTINGS["TRACE_SMOOTHING"]:
+            self.trace.lineTo(QPoint(self.robot.x, self.robot.y))
+        elif self.trace_smooth_level == 0:
+            self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]
+        else:
+            self.trace_smooth_level -= 1
+
         self.update()
 
 
@@ -115,6 +137,6 @@ if __name__ == "__main__":
 
     timer = QTimer()
     timer.timeout.connect(main.animate)
-    timer.start(33)
+    timer.start(SETTINGS["DELTA_T"] * 1000)
 
     app.exec_()

@@ -1,5 +1,6 @@
 import math
 import numpy
+from PyQt5.QtGui import QPainterPath
 
 
 class Robot:
@@ -17,6 +18,8 @@ class Robot:
         self.v = 0
         self.w = 0
         self.theta = 0
+
+        self.trace = []
 
     def increment_v(self):
         self.v = self.v + Robot.SPEED_INCREMENT
