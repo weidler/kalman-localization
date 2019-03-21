@@ -66,3 +66,15 @@ def draw_trace(painter: QPainter, trace: QPainterPath):
     painter.setBrush(Qt.NoBrush)
 
     painter.drawPath(trace)
+
+
+def draw_filter_trace(painter: QPainter, trace: QPainterPath):
+    pen = QPen()
+    pen.setStyle(Qt.DashLine)
+    pen.setCapStyle(Qt.RoundCap)
+    pen.setBrush(SETTINGS["COLOR_FILTER_TRACE"])
+    pen.setWidth(3)
+    painter.setPen(pen)
+    painter.setBrush(Qt.NoBrush)
+
+    painter.drawPath(trace)
