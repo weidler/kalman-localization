@@ -17,10 +17,10 @@ class App(QMainWindow):
     def __init__(self):
         super(QMainWindow, self).__init__()
         self.setWindowTitle('Kalman Localization')
-        self.resize(800, 800)
+        self.resize(SETTINGS["MAP_WIDTH"], SETTINGS["MAP_HEIGHT"])
 
-        self.robot = Robot(20, 100, 100)
-        self.map = Map()
+        self.map = Map(SETTINGS["MAP_WIDTH"], SETTINGS["MAP_HEIGHT"])
+        self.robot = Robot(20, self.map, 100, 100)
         self.trace = QPainterPath()
         self.trace.moveTo(QPoint(self.robot.x, self.robot.y))
         self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]

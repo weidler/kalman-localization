@@ -2,6 +2,8 @@ import math
 import numpy
 from PyQt5.QtGui import QPainterPath
 
+from core.map import Map
+
 
 class Robot:
     SPEED_INCREMENT = 0.3
@@ -10,7 +12,7 @@ class Robot:
     ANGLE_DECREMENT = 0.1
     DELTA_T = 0.01
 
-    def __init__(self, radius, x=0, y=0):
+    def __init__(self, radius: int, map: Map, x=0, y=0):
         self.radius = radius
         self.diameter = radius * 2
         self.x = x
@@ -20,6 +22,8 @@ class Robot:
         self.theta = 0
 
         self.trace = []
+
+        self.map = map
 
     def increment_v(self):
         self.v = self.v + Robot.SPEED_INCREMENT
@@ -46,6 +50,9 @@ class Robot:
         self.x = out[0, 0]
         self.y = out[1, 0]
         self.theta = out[2, 0]
+
+    def get_beacon_distances(self):
+        return self.map.get_beacon_distances(self.x, self.y)
 
 
 if __name__ == "__main__":

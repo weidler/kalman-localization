@@ -5,7 +5,7 @@ import numpy
 
 class Beacon:
 
-    def __init__(self, x, y):
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
 
@@ -15,7 +15,9 @@ class Beacon:
 
 class Map:
 
-    def __init__(self):
+    def __init__(self, width: int, height: int):
+        self.width = width
+        self.height = height
         self.beacons = []
 
     def add_beacon(self, beacon: Beacon):
@@ -23,3 +25,6 @@ class Map:
 
     def add_beacons(self, beacons: List[Beacon]):
         self.beacons.extend(beacons)
+
+    def get_beacon_distances(self, x, y):
+        return [beacon.distance_to(x, y) for beacon in self.beacons]

@@ -10,5 +10,9 @@ SETTINGS = {
     "COLOR_BEACON": QColor(0, 0, 255),
     "COLOR_INDICATOR": QColor(0, 0, 255).lighter(400),
     "COLOR_TRACE": QColor(0, 0, 0),
-    "COLOR_BACKGROUND": QColor(255, 255, 255)
+    "COLOR_BACKGROUND": QColor(255, 255, 255),
+
+    # MAP
+    "MAP_WIDTH": 800,
+    "MAP_HEIGHT": 800
 }
