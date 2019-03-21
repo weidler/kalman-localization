@@ -3,7 +3,7 @@ from PyQt5.QtGui import QColor
 SETTINGS = {
     "DELTA_T": 0.01,
     "BEACON_INDICATOR_DISTANCE": 300,
-    "TRACE_SMOOTHING": 1,
+    "TRACE_SMOOTHING": 10,
 
     # COLORS
     "COLOR_ROBOT": QColor(255, 0, 0),
