@@ -28,14 +28,18 @@ def draw_robot(painter: QPainter, robot: Robot):
     painter.drawLine(robot.x, robot.y, robot_nose_x, robot_nose_y)
 
 
-def draw_beacons(painter: QPainter, map: Map):
+def draw_beacons(painter: QPainter, robot: Robot):
     pen = QPen()
     pen.setBrush(SETTINGS["COLOR_BEACON"])
-    pen.setWidth(6)
+    pen.setWidth(8)
     pen.setCapStyle(Qt.RoundCap)
-    painter.setPen(pen)
 
-    for beacon in map.beacons:
+    for beacon in robot.map.beacons:
+        if beacon.distance_to(robot.x, robot.y) <= SETTINGS["BEACON_INDICATOR_DISTANCE"]:
+            pen.setWidth(12)
+        else:
+            pen.setWidth(6)
+        painter.setPen(pen)
         painter.drawPoint(beacon.x, beacon.y)
 
 
@@ -55,8 +59,9 @@ def draw_beacon_indicators(painter: QPainter, map: map, robot: Robot):
 def draw_trace(painter: QPainter, trace: QPainterPath):
     pen = QPen()
     pen.setStyle(Qt.SolidLine)
+    pen.setCapStyle(Qt.RoundCap)
     pen.setBrush(SETTINGS["COLOR_TRACE"])
-    pen.setWidth(2)
+    pen.setWidth(3)
     painter.setPen(pen)
     painter.setBrush(Qt.NoBrush)
 

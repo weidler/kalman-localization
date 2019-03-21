@@ -20,20 +20,25 @@ class App(QMainWindow):
         self.resize(SETTINGS["MAP_WIDTH"], SETTINGS["MAP_HEIGHT"])
 
         self.map = Map(SETTINGS["MAP_WIDTH"], SETTINGS["MAP_HEIGHT"])
-        self.robot = Robot(20, self.map, 100, 100)
+        self.robot = Robot(SETTINGS["ROBOT_RADIUS"], self.map, 100, 100)
+
         self.trace = QPainterPath()
         self.trace.moveTo(QPoint(self.robot.x, self.robot.y))
-        self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]
 
-        for x, y in itertools.product(range(200, 601, 200), range(200, 601, 200)):
+        self.estimated_trace = QPainterPath()
+        self.estimated_trace.moveTo(QPoint(self.robot.x, self.robot.y))
+
+        for x, y in itertools.product(range(200, SETTINGS["MAP_WIDTH"], 200), range(200, SETTINGS["MAP_HEIGHT"], 200)):
             self.map.add_beacon(Beacon(x, y))
+
+        self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]
 
     def paintEvent(self, e):
         qp = QPainter()
         qp.begin(self)
         qp.setRenderHint(QPainter.Antialiasing)
         draw_beacon_indicators(qp, self.map, self.robot)
-        draw_beacons(qp, self.map)
+        draw_beacons(qp, self.robot)
         draw_trace(qp, self.trace)
         draw_robot(qp, self.robot)
         qp.end()
