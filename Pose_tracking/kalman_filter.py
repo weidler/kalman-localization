@@ -19,7 +19,6 @@ class Kalman:
                             [0, Robot.DELTA_T]])
         self.R = numpy.matrix([[numpy.var(0.01), 0, 0], [0, numpy.var(0.01), 0], [0, 0, numpy.var(0.01)]])  # covariance matrix
         self.C = numpy.identity(3)
-        self.mu_t = numpy.zeros((3, 1))
         self.sigma_t = numpy.zeros((3, 3))
         self.I = numpy.identity(3)
         self.Q = numpy.matrix([[numpy.var(0.01), 0, 0], [0, numpy.var(0.01), 0], [0, 0, numpy.var(0.01)]])
@@ -33,14 +32,14 @@ class Kalman:
                             [0, Robot.DELTA_T]])
         self.sigma_out = self.A * self.sigma * numpy.transpose(self.A) \
             + self.R
-        self.sigma = numpy.diag((estimated_x, estimated_y, estimated_theta))
+        self.sigma = numpy.diag((numpy.var(estimated_x), numpy.var(estimated_y), numpy.var(estimated_theta)))
 
     def correction(self, robo):
         K = self.sigma_out * numpy.transpose(self.C) * numpy.linalg.inv(self.C * self.sigma_out * numpy.transpose(self.C) + self.Q)
-        self.z = numpy.matrix([[robo.x], [robo.y], [robo.theta]]) + self.gaussian_noise
-        self.mu_t = self.mu_out + K * (self.z - self.C * self.mu_out)
+        self.z = numpy.matrix([[estimated_x], [estimated_y], [estimated_theta]]) + self.gaussian_noise
+        self.mu = self.mu_out + K * (self.z - self.C * self.mu_out)
         self.sigma_t = (self.I - K * self.C) * self.sigma_out
 
         print('K = ' + str(K))
-        print('mü = ' + str(self.mu_t) + ' ' + 'sigma = ' + str(self.sigma_t))
+        print('mü = ' + str(self.mu) + ' ' + 'sigma = ' + str(self.sigma_t))
         print('real x = ' + str(robo.x) + ' ' + 'real y = ' + str(robo.y) + ' ' + 'real theta = ' + str(robo.theta))
