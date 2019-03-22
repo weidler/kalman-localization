@@ -22,7 +22,7 @@ class Kalman:
         self.I = numpy.identity(3)
         self.Q = numpy.matrix([[numpy.var(0.01), 0, 0], [0, numpy.var(0.01), 0], [0, 0, numpy.var(0.01)]])
         self.z = numpy.zeros((3, 1))
-        self.gaussian_noise = numpy.matrix([[numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)]])
+        self.gaussian_noise = numpy.matrix([[numpy.random.normal(0, 1)], [numpy.random.normal(0, 15)], [numpy.random.normal(0, 15)]])
 
     def prediction(self, robo):
         self.mü = numpy.matrix([[robo.x], [robo.y], [robo.theta]])
@@ -40,4 +40,4 @@ class Kalman:
         self.mü_t = self.mü_out + K * (self.z - self.C * self.mü_out)
         self.sigma_t = (self.I - K * self.C) * self.sigma_out
 
-        print('mü = ' + str(self.mü_t) + ' ' + 'sigma = ' + str(self.sigma_t))
+        # print('mü = ' + str(self.mü_t) + ' ' + 'sigma = ' + str(self.sigma_t))

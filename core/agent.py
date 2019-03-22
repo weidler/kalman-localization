@@ -3,6 +3,7 @@ import numpy
 from PyQt5.QtGui import QPainterPath
 
 from core.map import Map
+from settings import SETTINGS
 
 
 class Robot:
@@ -10,7 +11,7 @@ class Robot:
     SPEED_DECREMENT = 0.3
     ANGLE_INCREMENT = 0.1
     ANGLE_DECREMENT = 0.1
-    DELTA_T = 0.01
+    DELTA_T = SETTINGS["DELTA_T"]
 
     def __init__(self, radius: int, map: Map, x=0, y=0):
         self.radius = radius
