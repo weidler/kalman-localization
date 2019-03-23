@@ -23,7 +23,7 @@ class App(QMainWindow):
 
         self.map = Map(SETTINGS["MAP_WIDTH"], SETTINGS["MAP_HEIGHT"])
         self.robot = Robot(SETTINGS["ROBOT_RADIUS"], self.map, 100, 100)
-        # self.filter = Kalman(self.robot.v, self.robot.w)
+        self.filter = Kalman(self.robot)
 
         self.trace = QPainterPath()
         self.trace.moveTo(QPoint(self.robot.x, self.robot.y))
@@ -77,13 +77,13 @@ class App(QMainWindow):
 
     def animate(self):
         self.robot.velocity_based_model()
-        # self.filter.prediction(self.robot)
-        # self.filter.correction(self.robot)
+        self.filter.prediction()
+        self.filter.correction()
 
         # TRACES
         if self.trace_smooth_level == SETTINGS["TRACE_SMOOTHING"]:
             self.trace.lineTo(QPoint(self.robot.x, self.robot.y))
-            # self.estimated_trace.lineTo(QPoint(self.filter.mü_t[0], self.filter.mü_t[1]))
+            self.estimated_trace.lineTo(QPoint(self.filter.mu[0], self.filter.mu[1]))
         elif self.trace_smooth_level == 0:
             self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]
         else:

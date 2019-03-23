@@ -6,7 +6,7 @@ from Pose_tracking.sensor_model import Sensor
 
 class Kalman:
 
-    def __init__(self, robo):# v, w, init_x, init_y, init_theta):
+    def __init__(self, robo):
         self.robo = robo
         self.mu = numpy.matrix([[self.robo.x], [self.robo.y], [self.robo.theta]])
         self.u = numpy.matrix([[self.robo.v], [self.robo.w]])
