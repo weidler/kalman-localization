@@ -91,7 +91,7 @@ class Environment(QWidget):
 
         if self.trace.length() - (len(self.covariance_ellipses) * SETTINGS["DISTANCE_BETWEEN_COV_CIRCLES"]) >= SETTINGS[
             "DISTANCE_BETWEEN_COV_CIRCLES"]:
-            self.covariance_ellipses.append((self.robot.x, self.robot.y, 30, 10, self.robot.theta))
+            self.covariance_ellipses.append((self.filter.mu[0], self.filter.mu[1], self.filter.sigma_t[0, 0], self.filter.sigma_t[1, 1], self.filter.mu[2]))
 
         self.update()
 

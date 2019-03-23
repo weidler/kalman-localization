@@ -14,26 +14,25 @@ class Kalman:
         self.u = numpy.matrix([[0], [0]], dtype='float')
         self.mu = numpy.matrix([[self.robo.x], [self.robo.y], [self.robo.theta]], dtype='float')
         self.mu_out = numpy.zeros((3, 1))
-        self.sigma_out = numpy.zeros((3, 3))
         self.sigma = numpy.diag((0.1e-5, 0.1e-5, 0.1e-5))
+        self.sigma_out = self.sigma.copy()
         self.A = numpy.identity(3)
         self.B = numpy.matrix([[Robot.DELTA_T * math.cos(self.robo.theta), 0],
                                [Robot.DELTA_T * math.sin(self.robo.theta), 0],
                                [0, Robot.DELTA_T]], dtype='float')
         self.R = numpy.matrix(
-            [[numpy.var(0.01), 0, 0], [0, numpy.var(0.01), 0], [0, 0, numpy.var(0.01)]],
+            [[0.1e-5, 0, 0], [0, 0.1e-5, 0], [0, 0, 0.1e-5]],
             dtype='float')  # covariance matrix
+
         self.C = numpy.identity(3)
-        self.sigma_t = numpy.zeros((3, 3))
+        self.sigma_t = self.sigma.copy()
         self.I = numpy.identity(3)
-        self.Q = numpy.matrix([[numpy.var(0.01), 0, 0], [0, numpy.var(0.01), 0], [0, 0, numpy.var(0.01)]],
+        self.Q = numpy.matrix([[0.1e-5, 0, 0], [0, 0.1e-5, 0], [0, 0, 0.1e-5]],
                               dtype='float')
         self.z = numpy.zeros((3, 1))
         self.K = numpy.zeros((3, 3))
         self.gaussian_noise = numpy.matrix(
             [[numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)]], dtype='float')
-
-        print(self.mu)
 
     def prediction(self):
         self.u = numpy.matrix([[self.robo.v], [self.robo.w]], dtype='float')
@@ -63,9 +62,9 @@ class Kalman:
             total_estimated_y += estimated_y
             total_estimated_theta += estimated_theta
 
-            estimated_x, estimated_y, estimated_theta = total_estimated_x / n_landmarks, \
-                                                        total_estimated_y / n_landmarks, \
-                                                        total_estimated_theta / n_landmarks
+        estimated_x, estimated_y, estimated_theta = total_estimated_x / n_landmarks, \
+                                                    total_estimated_y / n_landmarks, \
+                                                    total_estimated_theta / n_landmarks
 
         # TODO: update sigma correctly
         self.sigma = numpy.diag(
@@ -76,9 +75,6 @@ class Kalman:
             [[estimated_x], [estimated_y], [estimated_theta]], dtype='float') + self.gaussian_noise
         self.mu = self.mu_out + self.K * (self.z - self.C * self.mu_out)
         self.sigma_t = (self.I - self.K * self.C) * self.sigma_out
-
-        print(self.mu)
-        print()
 
         # print('covariance' + str(self.sigma_t))
         # print('mu' + str(self.mu))
