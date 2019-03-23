@@ -47,8 +47,6 @@ class App(QMainWindow):
         draw_filter_trace(qp, self.estimated_trace)
         for ell in self.covariance_ellipses:
             draw_filter_covariance_ellipse(qp, *ell)
-
-
         draw_robot(qp, self.robot)
         qp.end()
 
@@ -83,7 +81,7 @@ class App(QMainWindow):
         # TRACES
         if self.trace_smooth_level == SETTINGS["TRACE_SMOOTHING"]:
             self.trace.lineTo(QPoint(self.robot.x, self.robot.y))
-            self.estimated_trace.lineTo(QPoint(self.filter.mu[0], self.filter.mu[1]))
+            self.estimated_trace.lineTo(QPoint(self.filter.mu_out[0], self.filter.mu_out[1]))
         elif self.trace_smooth_level == 0:
             self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]
         else:

@@ -6,7 +6,7 @@ from pygame import gfxdraw
 
 from core.agent import Robot
 from Pose_tracking.kalman_filter import Kalman
-
+from core.map import Map
 
 if __name__ == "__main__":
     pygame.init()  # initialize pygame
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     green = (0, 255, 0)
     lightblue = (66, 134, 244)
 
-    robi: Robot = Robot(40)
+    robi: Robot = Robot(40, Map(display_width, display_height))
 
     game_display = pygame.display.set_mode((display_width, display_height))  # size of environment
     pygame.display.set_caption('Mobile Robot Simulator')
@@ -56,7 +56,7 @@ if __name__ == "__main__":
             robi.stop()
 
         robi.velocity_based_model()
-        kalman: Kalman = Kalman(robi) #.v, robi.w, init_x=100, init_y=100, init_theta=0)
+        kalman: Kalman = Kalman(robi)
         kalman.prediction()
         kalman.correction()
 
