@@ -46,7 +46,7 @@ class Kalman:
         K = self.sigma_out * numpy.transpose(self.C) * numpy.linalg.inv(self.C * self.sigma_out * numpy.transpose(self.C) + self.Q)
         self.z = numpy.matrix([[sensor.estimated_x], [sensor.estimated_y], [sensor.estimated_theta]]) + self.gaussian_noise
         self.mu = self.mu_out + K * (self.z - self.C * self.mu_out)
-        self.sigma_t = (self.I - K * self.C) * self.sigma_out
+        self.sigma = (self.I - K * self.C) * self.sigma_out
 
         print('covariance' + str(self.sigma))
         print('mu' + str(self.mu))
