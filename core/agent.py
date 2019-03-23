@@ -6,8 +6,8 @@ from core.map import Map
 
 
 class Robot:
-    SPEED_INCREMENT = 0.3
-    SPEED_DECREMENT = 0.3
+    SPEED_INCREMENT = 0.5
+    SPEED_DECREMENT = 0.5
     ANGLE_INCREMENT = 0.1
     ANGLE_DECREMENT = 0.1
     DELTA_T = 0.01
