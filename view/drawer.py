@@ -1,3 +1,4 @@
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QPainter, QPen, QPainterPath
 
@@ -13,9 +14,9 @@ def draw_robot(painter: QPainter, robot: Robot):
     robot_nose_y = int(robot.y + (robot.radius * math.sin(robot.theta)))
 
     pen = QPen()
-    pen.setStyle(Qt.DashLine)
+    pen.setStyle(Qt.SolidLine)
     pen.setBrush(SETTINGS["COLOR_ROBOT"].darker())
-    pen.setWidth(3)
+    pen.setWidth(2)
     brush = SETTINGS["COLOR_ROBOT"]
 
     painter.setPen(pen)
@@ -78,3 +79,17 @@ def draw_filter_trace(painter: QPainter, trace: QPainterPath):
     painter.setBrush(Qt.NoBrush)
 
     painter.drawPath(trace)
+
+
+def draw_filter_covariance_ellipse(painter: QPainter, x, y, cov_x, cov_y, heading):
+    pen = QPen()
+    pen.setStyle(Qt.SolidLine)
+    pen.setWidth(2)
+
+    heading = math.degrees(heading)
+    transformer = QtGui.QTransform()
+    rect = QtCore.QRect(x - cov_x/2, y - cov_y/2, cov_x, cov_y)
+
+    painter.setPen(pen)
+
+    painter.drawEllipse(rect)

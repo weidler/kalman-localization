@@ -23,7 +23,7 @@ class Kalman:
         self.I = numpy.identity(3)
         self.Q = numpy.matrix([[numpy.var(0.01), 0, 0], [0, numpy.var(0.01), 0], [0, 0, numpy.var(0.01)]])
         self.z = numpy.zeros((3, 1))
-        self.gaussian_noise = numpy.matrix([[numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)]])
+        self.gaussian_noise = numpy.matrix([[numpy.random.normal(0, 1)], [numpy.random.normal(0, 15)], [numpy.random.normal(0, 15)]])
 
     def prediction(self):
         self.mu_out = self.A * self.mu + self.B * self.u
