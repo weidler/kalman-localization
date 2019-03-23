@@ -13,7 +13,7 @@ class Robot:
     ANGLE_DECREMENT = 0.1
     DELTA_T = SETTINGS["DELTA_T"]
 
-    def __init__(self, radius: int, map: Map, x=0, y=0):
+    def __init__(self, radius: int, x=100, y=100):
         self.radius = radius
         self.diameter = radius * 2
         self.x = x
@@ -24,7 +24,6 @@ class Robot:
 
         self.trace = []
 
-        self.map = map
 
     def increment_v(self):
         self.v = self.v + Robot.SPEED_INCREMENT
