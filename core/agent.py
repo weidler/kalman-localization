@@ -13,11 +13,11 @@ class Robot:
     ANGLE_DECREMENT = 0.1
     DELTA_T = SETTINGS["DELTA_T"]
 
-    def __init__(self, radius: int, map: Map,  x=100, y=100):
+    def __init__(self, radius: int, map: Map):
         self.radius = radius
         self.diameter = radius * 2
-        self.x = x
-        self.y = y
+        self.x = map.start_x
+        self.y = map.start_y
         self.v = 0
         self.w = 0
         self.theta = 0

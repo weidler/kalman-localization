@@ -18,6 +18,10 @@ class Map:
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
+
+        self.start_x = 0.5 * self.width
+        self.start_y = 0.5 * self.height
+
         self.beacons = []
 
     def add_beacon(self, beacon: Beacon):

@@ -30,10 +30,7 @@ class Kalman:
             [[numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)]])
 
     def prediction(self):
-        print("Predict")
         self.mu_out = self.A * self.mu + self.B * self.u
-        print(self.mu)
-        print(self.mu_out)
         self.B = numpy.matrix([[Robot.DELTA_T * math.cos(self.mu[2]), 0],
                                [Robot.DELTA_T * math.sin(self.mu[2]), 0],
                                [0, Robot.DELTA_T]])
@@ -41,8 +38,6 @@ class Kalman:
                          + self.R
 
     def correction(self):
-        print("correct")
-
         # TODO: correct update of landmark_x and y(position x and y of landmark),
         # TODO: distance to landmarks, bearing(angle to landmark)
         sensor: Sensor = Sensor(self.mu[2], 3, 2, 5, 20, 1)
@@ -51,8 +46,6 @@ class Kalman:
         # TODO: update sigma correctly
         self.sigma = numpy.diag(
             (numpy.var(sensor.estimated_x), numpy.var(sensor.estimated_y), numpy.var(sensor.estimated_theta)))
-
-        print(self.C * self.sigma_out * numpy.transpose(self.C) + self.Q)
 
         K = self.sigma_out * numpy.transpose(self.C) * numpy.linalg.inv(
             self.C * self.sigma_out * numpy.transpose(self.C) + self.Q)
