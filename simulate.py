@@ -76,7 +76,7 @@ class App(QMainWindow):
     def animate(self):
         self.robot.velocity_based_model()
         self.filter.prediction()
-        self.filter.correction()
+        # self.filter.correction()
 
         # TRACES
         if self.trace_smooth_level == SETTINGS["TRACE_SMOOTHING"]:

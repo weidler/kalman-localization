@@ -84,12 +84,17 @@ def draw_filter_trace(painter: QPainter, trace: QPainterPath):
 def draw_filter_covariance_ellipse(painter: QPainter, x, y, cov_x, cov_y, heading):
     pen = QPen()
     pen.setStyle(Qt.SolidLine)
+    pen.setBrush(SETTINGS["COLOR_FILTER_TRACE"])
     pen.setWidth(2)
+    painter.setPen(pen)
+    painter.setBrush(Qt.white)
 
     heading = math.degrees(heading)
-    transformer = QtGui.QTransform()
-    rect = QtCore.QRect(x - cov_x/2, y - cov_y/2, cov_x, cov_y)
 
-    painter.setPen(pen)
+    painter.translate(x, y)
+    painter.rotate(heading)
 
+    rect = QtCore.QRect(-cov_x/2, - cov_y/2, cov_x, cov_y)
     painter.drawEllipse(rect)
+
+    painter.resetTransform()
