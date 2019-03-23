@@ -7,10 +7,10 @@ from settings import SETTINGS
 
 
 class Robot:
-    SPEED_INCREMENT = 0.5
-    SPEED_DECREMENT = 0.5
-    ANGLE_INCREMENT = 0.1
-    ANGLE_DECREMENT = 0.1
+    SPEED_INCREMENT = 1
+    SPEED_DECREMENT = 1
+    ANGLE_INCREMENT = 0.2
+    ANGLE_DECREMENT = 0.2
     DELTA_T = SETTINGS["DELTA_T"]
 
     def __init__(self, radius: int, map: Map):

@@ -1,12 +1,11 @@
-from PyQt5 import QtGui, QtCore
+import math
+
+from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QPainter, QPen, QPainterPath
 
 from core.agent import Robot
-from core.map import Map
 from settings import SETTINGS
-
-import math
 
 
 def draw_robot(painter: QPainter, robot: Robot):
@@ -94,7 +93,7 @@ def draw_filter_covariance_ellipse(painter: QPainter, x, y, cov_x, cov_y, headin
     painter.translate(x, y)
     painter.rotate(heading)
 
-    rect = QtCore.QRect(-cov_x/2, - cov_y/2, cov_x, cov_y)
+    rect = QtCore.QRect(-cov_x / 2, - cov_y / 2, cov_x, cov_y)
     painter.drawEllipse(rect)
 
     painter.resetTransform()

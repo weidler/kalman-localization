@@ -78,12 +78,12 @@ class Environment(QWidget):
     def animate(self):
         self.robot.velocity_based_model()
         self.filter.prediction()
-        # self.filter.correction()
+        self.filter.correction()
 
         # TRACES
         if self.trace_smooth_level == SETTINGS["TRACE_SMOOTHING"]:
             self.trace.lineTo(QPoint(self.robot.x, self.robot.y))
-            self.estimated_trace.lineTo(QPoint(self.filter.mu_out[0], self.filter.mu_out[1]))
+            self.estimated_trace.lineTo(QPoint(self.filter.mu[0], self.filter.mu[1]))
         elif self.trace_smooth_level == 0:
             self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]
         else:
@@ -98,7 +98,7 @@ class Environment(QWidget):
 
 class TrackingWidget(QWidget):
 
-    def __init__(self, robot, parent: QWidget=None):
+    def __init__(self, robot, parent: QWidget = None):
         super().__init__(parent)
 
         self.robot = robot
@@ -132,5 +132,4 @@ class TrackingWidget(QWidget):
         qp.end()
 
     def update_indicators(self):
-        print(self.robot.v)
         self.indicators.setText(f"Velocity: {round(self.robot.v, 1)}\nRotation Velocity: {round(self.robot.w, 1)}")
