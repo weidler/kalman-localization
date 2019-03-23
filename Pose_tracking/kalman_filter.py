@@ -30,6 +30,7 @@ class Kalman:
             [[numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)], [numpy.random.normal(0, 1)]])
 
     def prediction(self):
+        print("Predict")
         self.mu_out = self.A * self.mu + self.B * self.u
         print(self.mu)
         print(self.mu_out)
@@ -40,6 +41,8 @@ class Kalman:
                          + self.R
 
     def correction(self):
+        print("correct")
+
         # TODO: correct update of landmark_x and y(position x and y of landmark),
         # TODO: distance to landmarks, bearing(angle to landmark)
         sensor: Sensor = Sensor(self.mu[2], 3, 2, 5, 20, 1)
@@ -56,8 +59,9 @@ class Kalman:
         self.z = numpy.matrix(
             [[sensor.estimated_x], [sensor.estimated_y], [sensor.estimated_theta]]) + self.gaussian_noise
         self.mu = self.mu_out + K * (self.z - self.C * self.mu_out)
-        self.sigma = (self.I - K * self.C) * self.sigma_out
+        self.sigma_t = (self.I - K * self.C) * self.sigma_out
 
         # print('covariance' + str(self.sigma))
         # print('mu' + str(self.mu))
         # print('real x = ' + str(self.robo.x) + ', real y = ' + str(self.robo.y) + ', real theta = ' + str(self.robo.theta))
+

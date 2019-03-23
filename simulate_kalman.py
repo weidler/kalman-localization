@@ -23,6 +23,7 @@ if __name__ == "__main__":
     lightblue = (66, 134, 244)
 
     robi: Robot = Robot(40, Map(display_width, display_height))
+    kalman: Kalman = Kalman(robi)
 
     game_display = pygame.display.set_mode((display_width, display_height))  # size of environment
     pygame.display.set_caption('Mobile Robot Simulator')
@@ -56,7 +57,6 @@ if __name__ == "__main__":
             robi.stop()
 
         robi.velocity_based_model()
-        kalman: Kalman = Kalman(robi)
         kalman.prediction()
         kalman.correction()
 
