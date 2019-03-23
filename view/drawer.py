@@ -1,3 +1,4 @@
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QPainter, QPen, QPainterPath
 
@@ -85,6 +86,10 @@ def draw_filter_covariance_ellipse(painter: QPainter, x, y, cov_x, cov_y, headin
     pen.setStyle(Qt.SolidLine)
     pen.setWidth(2)
 
+    heading = math.degrees(heading)
+    transformer = QtGui.QTransform()
+    rect = QtCore.QRect(x - cov_x/2, y - cov_y/2, cov_x, cov_y)
+
     painter.setPen(pen)
 
-    painter.drawEllipse()
+    painter.drawEllipse(rect)
