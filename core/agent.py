@@ -22,7 +22,7 @@ class Robot:
         self.w = 0
         self.theta = 0
 
-        self.map = map
+        self.map: Map = map
 
         self.trace = []
 
@@ -53,8 +53,8 @@ class Robot:
         self.y = out[1, 0]
         self.theta = out[2, 0]
 
-    def get_beacon_distances(self):
-        return self.map.get_beacon_distances(self.x, self.y)
+    def get_beacon_info(self):
+        return list(zip(self.map.get_bearings(self.x, self.y, self.theta), self.map.get_beacon_distances(self.x, self.y)))
 
 
 if __name__ == "__main__":
