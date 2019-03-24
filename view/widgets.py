@@ -5,7 +5,7 @@ from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QPainterPath, QPainter, QPen
 from PyQt5.QtWidgets import QWidget, QLabel, QGraphicsOpacityEffect
 
-from Pose_tracking.kalman_filter import Kalman
+from filters.kalman_filter import Kalman
 from core.agent import Robot
 from core.map import Map, Beacon
 from settings import SETTINGS
@@ -91,7 +91,7 @@ class Environment(QWidget):
 
         if self.trace.length() - (len(self.covariance_ellipses) * SETTINGS["DISTANCE_BETWEEN_COV_CIRCLES"]) >= SETTINGS[
             "DISTANCE_BETWEEN_COV_CIRCLES"]:
-            self.covariance_ellipses.append((self.filter.mu[0], self.filter.mu[1], self.filter.sigma_t[0, 0], self.filter.sigma_t[1, 1], self.filter.mu[2]))
+            self.covariance_ellipses.append((self.filter.mu[0], self.filter.mu[1], self.filter.sigma[0, 0], self.filter.sigma[1, 1], self.filter.mu[2]))
 
         self.update()
 

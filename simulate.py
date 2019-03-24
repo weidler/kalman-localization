@@ -40,6 +40,6 @@ if __name__ == "__main__":
 
     timer = QTimer()
     timer.timeout.connect(main.step)
-    timer.start(SETTINGS["DELTA_T"] * 100)
+    timer.start(SETTINGS["DELTA_T"] * 1000)
 
     app.exec_()

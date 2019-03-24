@@ -53,7 +53,6 @@ class Robot:
         self.x = out[0, 0]
         self.y = out[1, 0]
         self.theta = out[2, 0]
-        print(self.theta)
 
     def get_beacon_info(self):
         return list(zip(self.map.get_bearings(self.x, self.y, self.theta), self.map.get_beacon_distances(self.x, self.y)))

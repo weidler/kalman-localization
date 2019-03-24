@@ -2,7 +2,7 @@ import math
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt, QRectF
-from PyQt5.QtGui import QPainter, QPen, QPainterPath, QFont
+from PyQt5.QtGui import QPainter, QPen, QPainterPath, QFont, QBrush, QImage
 
 from core.agent import Robot
 from settings import SETTINGS
@@ -12,11 +12,12 @@ def draw_robot(painter: QPainter, robot: Robot):
     robot_nose_x = int(robot.x + (robot.radius * math.cos(robot.theta)))
     robot_nose_y = int(robot.y + (robot.radius * math.sin(robot.theta)))
 
+    brush = SETTINGS["COLOR_ROBOT"]
+
     pen = QPen()
     pen.setStyle(Qt.SolidLine)
     pen.setBrush(SETTINGS["COLOR_ROBOT"].darker())
     pen.setWidth(2)
-    brush = SETTINGS["COLOR_ROBOT"]
 
     painter.setPen(pen)
     painter.setBrush(brush)

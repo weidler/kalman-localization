@@ -5,7 +5,7 @@ import pygame
 from pygame import gfxdraw
 
 from core.agent import Robot
-from Pose_tracking.kalman_filter import Kalman
+from filters.kalman_filter import Kalman
 from core.map import Map
 
 if __name__ == "__main__":
