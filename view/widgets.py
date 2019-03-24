@@ -77,13 +77,17 @@ class Environment(QWidget):
 
     def animate(self):
         self.robot.velocity_based_model()
-        self.filter.prediction()
-        self.filter.correction()
+        prediction = self.filter.prediction()
+        correction = self.filter.correction()
+
+        estimation = correction
+
+        print(f"{self.robot.x - estimation[0,0]}\n{self.robot.y - estimation[1,0]}\n")
 
         # TRACES
         if self.trace_smooth_level == SETTINGS["TRACE_SMOOTHING"]:
             self.trace.lineTo(QPoint(self.robot.x, self.robot.y))
-            self.estimated_trace.lineTo(QPoint(self.filter.mu[0], self.filter.mu[1]))
+            self.estimated_trace.lineTo(QPoint(estimation[0, 0], estimation[1, 0]))
         elif self.trace_smooth_level == 0:
             self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]
         else:

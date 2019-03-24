@@ -1,33 +1,46 @@
+import numpy
+
 from numpy import *
 from scipy.optimize import *
 
+from sympy.core.symbol import symbols
+from sympy.solvers.solveset import nonlinsolve
+import sympy
 
-def feature_based_measurement(mu, landmark_position_x, landmark_position_y, distance, bearing, signature):
+from settings import SETTINGS
 
-    # Example: non-linear equation (https://stackoverflow.com/questions/8739227/how-to-solve-a-pair-of-nonlinear-equations-using-python)
-    # def equations(p):
-    #     x, y = p
-    #     return x+y**2-4, math.exp(x) + x*y - 3
-    #
-    # x, y =  fsolve(equations, (1, 1))
-    #
-    # print equations((x, y))
 
+def feature_based_measurement(theta, mx, my, distance, bearing, x_pred, y_pred):
     # TODO: add gaussian noise
     def equations(z):
         x = z[0]
         y = z[1]
 
         f = empty(2)
-        f[0] = math.sqrt((landmark_position_x - x) ** 2 + (landmark_position_y - y) ** 2) - distance
-        f[1] = math.atan2(landmark_position_y - y, landmark_position_x - x) - mu - bearing
+        f[0] = math.sqrt((mx - x) ** 2 + (my - y) ** 2) - distance
+        f[1] = math.atan2(my - y, mx - x) - theta - bearing
+
         return f
 
-    z_guess = array([500, 500])
+    z_guess = array([x_pred, y_pred])
     z = fsolve(equations, z_guess)
 
-    estimated_x = z[0]
-    estimated_y = z[1]
-    estimated_theta = mu
+    # x, y = symbols("x, y", real=True)
+    # system = [sympy.sqrt((mx - x) ** 2 + (my - y) ** 2) - distance,
+    #           sympy.atan2(my - y, mx - x) - theta - bearing]
+    #
+    # z = nonlinsolve(system, [x, y])
+    #
+    # eps = 0.001
+    # t = math.tan(bearing + theta - eps)**2
+    # a = my
+    # b = mx
+    # r = distance
+    #
+    # # y = (-sqrt(-(a**2)*(t**4) + 2*a*b*(t**4) - (b**2)*(t**4) + (eps**2)*(t**2) - 2*eps*r*(t**4) - 2*eps*r*(t**2) + (r**2)*(t**4) + (r**2)*(t**2) + a*(t**2) - a*t + a + b*t))/((t**2) + 1)
+    # # x = - sqrt((r - eps)**2 - (a - y)**2) + b
+    #
+    # y = my - math.sqrt((r - eps)**2 / ((1/t) + 1))
+    # x = - math.sqrt((r - eps) ** 2 - (my - y) ** 2) + mx
 
-    return estimated_x, estimated_y, estimated_theta
+    return z[0], z[1], theta

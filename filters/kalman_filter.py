@@ -14,7 +14,7 @@ class Kalman:
 
         # STATE MU
         self.mu = numpy.matrix([[self.robot.x], [self.robot.y], [self.robot.theta]], dtype='float')
-        self.mu_prediction = self.mu.copy
+        self.mu_prediction = self.mu.copy()
 
         # MOTION MODEL VALUES
         self.u = numpy.matrix([[self.robot.v], [self.robot.w]], dtype='float')
@@ -73,37 +73,39 @@ class Kalman:
         # estimate sigma
         self.sigma_prediction = self.A * self.sigma * numpy.transpose(self.A) + self.R
 
+        return self.mu_prediction
+
     def correction(self):
         # measure landmarks and estimate x, y, theta
-        n_landmarks = len(self.robot.map.beacons)
+        in_range_beacons = self.robot.map.get_beacons_in_distance(self.robot.x, self.robot.y, SETTINGS["BEACON_INDICATOR_DISTANCE"])
+        n_landmarks = len(in_range_beacons)
         total_estimated_x, total_estimated_y, total_estimated_theta = 0, 0, 0
-        for i, beacon in enumerate(
-                self.robot.map.get_beacons_in_distance(self.robot.x, self.robot.y,
-                                                       SETTINGS["BEACON_INDICATOR_DISTANCE"])):
-            estimated_x, estimated_y, estimated_theta = feature_based_measurement(self.mu[2], beacon.x, beacon.y,
+        for i, beacon in enumerate(in_range_beacons):
+            estimated_x, estimated_y, estimated_theta = feature_based_measurement(int(self.mu[2]),
+                                                                                  beacon.x,
+                                                                                  beacon.y,
                                                                                   beacon.distance_to(self.robot.x,
                                                                                                      self.robot.y),
                                                                                   beacon.bearing(self.robot.x,
                                                                                                  self.robot.y,
                                                                                                  self.robot.theta),
-                                                                                  i)
+                                                                                  self.mu_prediction[0, 0],
+                                                                                  self.mu_prediction[1, 0])
             total_estimated_x += estimated_x
             total_estimated_y += estimated_y
             total_estimated_theta += estimated_theta
 
         # average over landmarks
-        estimated_x, estimated_y, estimated_theta = total_estimated_x / n_landmarks, \
-                                                    total_estimated_y / n_landmarks, \
-                                                    total_estimated_theta / n_landmarks
-
-        self.z = numpy.matrix([[estimated_x],
-                               [estimated_y],
-                               [estimated_theta]], dtype='float') + self.gaussian_noise
+        self.z = numpy.matrix([[total_estimated_x / n_landmarks],
+                               [total_estimated_y / n_landmarks],
+                               [total_estimated_theta / n_landmarks]], dtype='float') + self.gaussian_noise
 
         inverse = numpy.linalg.inv(self.C * self.sigma_prediction * self.C.transpose() + self.Q)
         self.K = self.sigma_prediction * self.C.transpose() * inverse
         self.mu = self.mu_prediction + self.K * (self.z - self.C * self.mu_prediction)
         self.sigma = (self.I - self.K * self.C) * self.sigma_prediction
+
+        return self.z
 
         # print('covariance' + str(self.sigma))
         # print('mu' + str(self.mu))

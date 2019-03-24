@@ -32,8 +32,8 @@ class Map:
         self.width: int = width
         self.height: int = height
 
-        self.start_x = 0.5 * self.width
-        self.start_y = 0.5 * self.height
+        self.start_x = 0.65 * self.width
+        self.start_y = 0.65 * self.height
 
         self.beacons: List[Beacon] = []
 
