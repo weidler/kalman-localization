@@ -23,7 +23,7 @@ def feature_based_measurement(mu, landmark_position_x, landmark_position_y, dist
         f[1] = math.atan2(landmark_position_y - y, landmark_position_x - x) - mu - bearing
         return f
 
-    z_guess = array([50, 50])
+    z_guess = array([500, 500])
     z = fsolve(equations, z_guess)
 
     estimated_x = z[0]

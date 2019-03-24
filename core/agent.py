@@ -26,7 +26,6 @@ class Robot:
 
         self.trace = []
 
-
     def increment_v(self):
         self.v = self.v + Robot.SPEED_INCREMENT
 
@@ -44,6 +43,8 @@ class Robot:
         self.w = 0
 
     def velocity_based_model(self):
+        if self.theta >= 2 * math.pi or self.theta <= - 2 * math.pi:
+            self.theta = 0
         out = numpy.matrix([[self.x], [self.y], [self.theta]]) \
             + numpy.matrix([[Robot.DELTA_T * math.cos(self.theta), 0], \
                             [Robot.DELTA_T * math.sin(self.theta), 0], \
@@ -52,6 +53,7 @@ class Robot:
         self.x = out[0, 0]
         self.y = out[1, 0]
         self.theta = out[2, 0]
+        print(self.theta)
 
     def get_beacon_info(self):
         return list(zip(self.map.get_bearings(self.x, self.y, self.theta), self.map.get_beacon_distances(self.x, self.y)))

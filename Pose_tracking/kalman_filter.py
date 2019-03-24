@@ -1,5 +1,5 @@
 import math
-
+import statistics
 import numpy
 
 from Pose_tracking.sensor_model import feature_based_measurement
@@ -42,6 +42,7 @@ class Kalman:
                                [0, Robot.DELTA_T]], dtype='float')
         self.sigma_out = self.A * self.sigma * numpy.transpose(self.A) \
                          + self.R
+        # self.R = statistics.stdev()
 
     def correction(self):
         # TODO: correct update of landmark_x and y(position x and y of landmark),
@@ -70,6 +71,7 @@ class Kalman:
         self.sigma = numpy.diag(
             (numpy.var(estimated_x), numpy.var(estimated_y), numpy.var(estimated_theta)))
         inverse = self.C * self.sigma_out * numpy.transpose(self.C) + self.Q
+        numpy.linalg.det(inverse)
         self.K = self.sigma_out * numpy.transpose(self.C) * numpy.linalg.pinv(inverse)
         self.z = numpy.matrix(
             [[estimated_x], [estimated_y], [estimated_theta]], dtype='float') + self.gaussian_noise
