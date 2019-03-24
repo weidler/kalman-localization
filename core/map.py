@@ -3,6 +3,8 @@ from typing import List
 
 import numpy
 
+from settings import SETTINGS
+
 
 class Beacon:
 
@@ -19,7 +21,7 @@ class Beacon:
         vector_bearing = numpy.array((x - self.x, y - self.y))
 
         bearing = numpy.arccos(
-            numpy.dot(vector_bearing, vector_heading)/
+            numpy.dot(vector_bearing, vector_heading) /
             (numpy.linalg.norm(vector_bearing) * numpy.linalg.norm(vector_heading))
         )
 
@@ -32,8 +34,8 @@ class Map:
         self.width: int = width
         self.height: int = height
 
-        self.start_x = 0.65 * self.width
-        self.start_y = 0.65 * self.height
+        self.start_x = SETTINGS["MAP_START"][0]
+        self.start_y = SETTINGS["MAP_START"][1]
 
         self.beacons: List[Beacon] = []
 

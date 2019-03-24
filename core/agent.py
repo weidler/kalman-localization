@@ -9,8 +9,8 @@ from settings import SETTINGS
 class Robot:
     SPEED_INCREMENT = 1
     SPEED_DECREMENT = 1
-    ANGLE_INCREMENT = 0.2
-    ANGLE_DECREMENT = 0.2
+    ANGLE_INCREMENT = 0.1
+    ANGLE_DECREMENT = 0.1
     DELTA_T = SETTINGS["DELTA_T"]
 
     def __init__(self, radius: int, map: Map):
@@ -20,7 +20,7 @@ class Robot:
         self.y = map.start_y
         self.v = 0
         self.w = 0
-        self.theta = 0
+        self.theta = math.radians(90)
 
         self.map: Map = map
 
@@ -43,8 +43,7 @@ class Robot:
         self.w = 0
 
     def velocity_based_model(self):
-        if self.theta >= 2 * math.pi or self.theta <= - 2 * math.pi:
-            self.theta = 0
+        self.theta = self.theta % (2 * math.pi)
         out = numpy.matrix([[self.x], [self.y], [self.theta]]) \
             + numpy.matrix([[Robot.DELTA_T * math.cos(self.theta), 0], \
                             [Robot.DELTA_T * math.sin(self.theta), 0], \

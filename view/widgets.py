@@ -82,7 +82,7 @@ class Environment(QWidget):
 
         estimation = correction
 
-        print(f"{self.robot.x - estimation[0,0]}\n{self.robot.y - estimation[1,0]}\n")
+        # print(f"{self.robot.x - estimation[0,0]}\n{self.robot.y - estimation[1,0]}\n")
 
         # TRACES
         if self.trace_smooth_level == SETTINGS["TRACE_SMOOTHING"]:
@@ -93,6 +93,7 @@ class Environment(QWidget):
         else:
             self.trace_smooth_level -= 1
 
+        # COVARIANCE CIRCLES
         if self.trace.length() - (len(self.covariance_ellipses) * SETTINGS["DISTANCE_BETWEEN_COV_CIRCLES"]) >= SETTINGS[
             "DISTANCE_BETWEEN_COV_CIRCLES"]:
             self.covariance_ellipses.append((self.filter.mu[0], self.filter.mu[1], self.filter.sigma[0, 0], self.filter.sigma[1, 1], self.filter.mu[2]))

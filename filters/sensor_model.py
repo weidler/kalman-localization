@@ -12,18 +12,19 @@ from settings import SETTINGS
 
 def feature_based_measurement(theta, mx, my, distance, bearing, x_pred, y_pred):
     # TODO: add gaussian noise
-    def equations(z):
-        x = z[0]
-        y = z[1]
-
-        f = empty(2)
-        f[0] = math.sqrt((mx - x) ** 2 + (my - y) ** 2) - distance
-        f[1] = math.atan2(my - y, mx - x) - theta - bearing
-
-        return f
-
-    z_guess = array([x_pred, y_pred])
-    z = fsolve(equations, z_guess)
+    # def equations(z):
+    #     x = z[0]
+    #     y = z[1]
+    #
+    #     f = empty(2)
+    #     f[0] = math.sqrt((mx - x) ** 2 + (my - y) ** 2) - distance
+    #     f[1] = math.atan2(my - y, mx - x) - theta - bearing
+    #
+    #     return f
+    #
+    # z_guess = array([x_pred, y_pred])
+    # z = fsolve(equations, z_guess)
+    # x, y = z[0], z[1]
 
     # x, y = symbols("x, y", real=True)
     # system = [sympy.sqrt((mx - x) ** 2 + (my - y) ** 2) - distance,
@@ -43,4 +44,7 @@ def feature_based_measurement(theta, mx, my, distance, bearing, x_pred, y_pred):
     # y = my - math.sqrt((r - eps)**2 / ((1/t) + 1))
     # x = - math.sqrt((r - eps) ** 2 - (my - y) ** 2) + mx
 
-    return z[0], z[1], theta
+    x = mx - math.cos(bearing - theta) * distance
+    y = my + math.sin(bearing - theta) * distance
+
+    return x, y, theta
