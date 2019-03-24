@@ -14,24 +14,28 @@ class Beacon:
         return numpy.linalg.norm(numpy.array([self.x, self.y]) - numpy.array([x, y]))
 
     def bearing(self, x, y, heading):
-        endpoint_heading = (math.cos(heading), math.sin(heading))
+        endpoint_heading = (x + math.cos(heading), y + math.sin(heading))
         vector_heading = numpy.array((x - endpoint_heading[0], y - endpoint_heading[1]))
         vector_bearing = numpy.array((x - self.x, y - self.y))
 
-        bearing = numpy.arccos(numpy.dot(vector_bearing, vector_heading)/(numpy.linalg.norm(vector_heading) * numpy.linalg.norm(vector_heading)))
+        bearing = numpy.arccos(
+            numpy.dot(vector_bearing, vector_heading)/
+            (numpy.linalg.norm(vector_bearing) * numpy.linalg.norm(vector_heading))
+        )
+
         return bearing
 
 
 class Map:
 
     def __init__(self, width: int, height: int):
-        self.width = width
-        self.height = height
+        self.width: int = width
+        self.height: int = height
 
         self.start_x = 0.5 * self.width
         self.start_y = 0.5 * self.height
 
-        self.beacons = []
+        self.beacons: List[Beacon] = []
 
     def add_beacon(self, beacon: Beacon):
         self.beacons.append(beacon)

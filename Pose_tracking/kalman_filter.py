@@ -14,20 +14,20 @@ class Kalman:
         self.u = numpy.matrix([[0], [0]], dtype='float')
         self.mu = numpy.matrix([[self.robo.x], [self.robo.y], [self.robo.theta]], dtype='float')
         self.mu_out = numpy.zeros((3, 1))
-        self.sigma = numpy.diag((0.1e-5, 0.1e-5, 0.1e-5))
+        self.sigma = numpy.diag((SETTINGS["VERY_SMALL_NUMBER"], SETTINGS["VERY_SMALL_NUMBER"], SETTINGS["VERY_SMALL_NUMBER"]))
         self.sigma_out = self.sigma.copy()
         self.A = numpy.identity(3)
         self.B = numpy.matrix([[Robot.DELTA_T * math.cos(self.robo.theta), 0],
                                [Robot.DELTA_T * math.sin(self.robo.theta), 0],
                                [0, Robot.DELTA_T]], dtype='float')
         self.R = numpy.matrix(
-            [[0.1e-5, 0, 0], [0, 0.1e-5, 0], [0, 0, 0.1e-5]],
+            [[SETTINGS["VERY_SMALL_NUMBER"], 0, 0], [0, SETTINGS["VERY_SMALL_NUMBER"], 0], [0, 0, SETTINGS["VERY_SMALL_NUMBER"]]],
             dtype='float')  # covariance matrix
 
         self.C = numpy.identity(3)
         self.sigma_t = self.sigma.copy()
         self.I = numpy.identity(3)
-        self.Q = numpy.matrix([[0.1e-5, 0, 0], [0, 0.1e-5, 0], [0, 0, 0.1e-5]],
+        self.Q = numpy.matrix([[SETTINGS["VERY_SMALL_NUMBER"], 0, 0], [0, SETTINGS["VERY_SMALL_NUMBER"], 0], [0, 0, SETTINGS["VERY_SMALL_NUMBER"]]],
                               dtype='float')
         self.z = numpy.zeros((3, 1))
         self.K = numpy.zeros((3, 3))
