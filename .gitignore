@@ -13,6 +13,7 @@
 .idea/**/dictionaries
 .idea/**/shelf
 .idea/**/misc.xml
+.idea/**/kalman-localization.iml
 
 # Generated files
 .idea/**/contentModel.xml
