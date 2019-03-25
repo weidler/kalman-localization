@@ -1,5 +1,7 @@
+import datetime
 import itertools
 
+import numpy
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QPainterPath, QPainter, QPen
@@ -39,6 +41,11 @@ class Environment(QWidget):
         p.setColor(self.backgroundRole(), SETTINGS["COLOR_BACKGROUND"])
         self.setPalette(p)
 
+        # STATISTICS
+        self.steps = 0
+        self.total_squared_error = 0
+        self.total_squared_error_trajectory = []
+
     def paintEvent(self, e):
         qp = QPainter()
         qp.begin(self)
@@ -73,6 +80,11 @@ class Environment(QWidget):
 
         # STOP
         if e.key() == QtCore.Qt.Key_Escape:
+            with open(f"results/{datetime.datetime.now()}.txt", "w") as f:
+                f.write(
+                    f"{self.total_squared_error/self.steps}\n"
+                    f"{self.total_squared_error_trajectory}"
+                )
             exit()
 
     def animate(self):
@@ -99,6 +111,12 @@ class Environment(QWidget):
             self.covariance_ellipses.append((self.filter.mu[0], self.filter.mu[1], self.filter.sigma[0, 0], self.filter.sigma[1, 1], self.filter.mu[2]))
 
         self.update()
+
+        # STATISTICS
+        squared_error = numpy.linalg.norm(numpy.asarray(correction[0:2].transpose()).squeeze() - numpy.array((self.robot.x, self.robot.y)))
+        self.total_squared_error += squared_error
+        self.total_squared_error_trajectory.append(self.total_squared_error)
+        self.steps += 1
 
 
 class TrackingWidget(QWidget):
