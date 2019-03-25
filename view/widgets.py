@@ -43,8 +43,10 @@ class Environment(QWidget):
 
         # STATISTICS
         self.steps = 0
-        self.total_squared_error = 0
-        self.total_squared_error_trajectory = []
+        self.total_squared_correction_error = 0
+        self.total_squared_prediction_error = 0
+        self.total_squared_correction_error_trajectory = []
+        self.total_squared_prediction_error_trajectory = []
 
     def paintEvent(self, e):
         qp = QPainter()
@@ -80,10 +82,11 @@ class Environment(QWidget):
 
         # STOP
         if e.key() == QtCore.Qt.Key_Escape:
-            with open(f"results/{datetime.datetime.now()}.txt", "w") as f:
+            with open(f"results/experiment.txt", "w") as f:
                 f.write(
-                    f"{self.total_squared_error/self.steps}\n"
-                    f"{self.total_squared_error_trajectory}"
+                    f"{self.total_squared_correction_error/self.steps}; {self.total_squared_prediction_error/self.steps}\n"
+                    f"{self.total_squared_correction_error_trajectory}\n"
+                    f"{self.total_squared_prediction_error_trajectory}"
                 )
             exit()
 
@@ -113,9 +116,14 @@ class Environment(QWidget):
         self.update()
 
         # STATISTICS
-        squared_error = numpy.linalg.norm(numpy.asarray(correction[0:2].transpose()).squeeze() - numpy.array((self.robot.x, self.robot.y)))
-        self.total_squared_error += squared_error
-        self.total_squared_error_trajectory.append(self.total_squared_error)
+        correction_squared_error = numpy.linalg.norm(numpy.asarray(correction[0:2].transpose()).squeeze() - numpy.array((self.robot.x, self.robot.y)))
+        prediction_squared_error = numpy.linalg.norm(numpy.asarray(prediction[0:2].transpose()).squeeze() - numpy.array((self.robot.x, self.robot.y)))
+
+        self.total_squared_correction_error += correction_squared_error
+        self.total_squared_prediction_error += prediction_squared_error
+        self.total_squared_correction_error_trajectory.append(self.total_squared_correction_error)
+        self.total_squared_prediction_error_trajectory.append(self.total_squared_prediction_error)
+
         self.steps += 1
 
 

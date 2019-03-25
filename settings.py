@@ -4,7 +4,7 @@ SETTINGS = {"DELTA_T": 0.1,
             "BEACON_INDICATOR_DISTANCE": 300,
             "TRACE_SMOOTHING": 1,
             "DISTANCE_BETWEEN_COV_CIRCLES": 100,
-            "MOTION_NOISE": 0.001,
+            "MOTION_NOISE": 0.05,
             "SENSOR_NOISE": 0.05,
 
             "COLOR_ROBOT": QColor(),
