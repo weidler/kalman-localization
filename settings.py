@@ -8,10 +8,10 @@ SETTINGS = {"DELTA_T": 0.1,
             "INITIAL_COVARIANCE": 0.000001,
 
             "MOTION_NOISE": 0.01,
-            "MOTION_NOISE_ESTIMATION": 0.00001,
+            "MOTION_NOISE_ESTIMATION": 0.0001,
 
             "SENSOR_NOISE": 0.004,
-            "SENSOR_NOISE_ESTIMATION": 0.9,
+            "SENSOR_NOISE_ESTIMATION": 0.001,
 
             "COV_SCALING": 5000,
 
