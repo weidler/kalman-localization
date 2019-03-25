@@ -101,9 +101,7 @@ class Kalman:
                                                                                                      self.robot.y),
                                                                                   beacon.bearing(self.robot.x,
                                                                                                  self.robot.y,
-                                                                                                 self.robot.theta),
-                                                                                  self.mu_prediction[0, 0],
-                                                                                  self.mu_prediction[1, 0])
+                                                                                                 self.robot.theta))
             total_estimated_x += estimated_x
             total_estimated_y += estimated_y
             total_estimated_theta += estimated_theta
@@ -119,8 +117,7 @@ class Kalman:
         # K is the influence of the difference between measurement and prediction
         K = self.sigma_prediction * self.C.transpose() * inverse
         self.K_trace.append(K.sum()/3)
-        K = 1
         self.mu = self.mu_prediction + K * (self.z - self.C * self.mu_prediction)
         self.sigma = (self.I - K * self.C) * self.sigma_prediction
 
-        return self.z
+        return self.mu
