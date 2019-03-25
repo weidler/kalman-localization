@@ -1,5 +1,6 @@
 import datetime
 import itertools
+import math
 
 import numpy
 from PyQt5 import QtCore
@@ -25,8 +26,9 @@ class Environment(QWidget):
         self.robot = Robot(SETTINGS["ROBOT_RADIUS"], self.map)
 
         # SET UP ROBOT FOR POTENTIAL EXPERIMENT
-        self.robot.v = SETTINGS["ROBOT_START_V"]
-        self.robot.w = SETTINGS["ROBOT_START_W"]
+        if SETTINGS["EXPERIMENT_MODE"]:
+            self.robot.v = SETTINGS["ROBOT_START_V"]
+            self.robot.w = SETTINGS["ROBOT_START_W"]
         self.experiment_length = SETTINGS["EXPERIMENT_LENGTH"]
 
         self.filter = Kalman(self.robot)
@@ -126,11 +128,11 @@ class Environment(QWidget):
 
         self.steps += 1
 
-        if self.experiment_length is not None and self.steps >= self.experiment_length:
+        if SETTINGS["EXPERIMENT_MODE"] and self.experiment_length is not None and self.steps >= self.experiment_length:
             self.finish()
 
     def finish(self):
-        with open(f"results/experiment.txt", "w") as f:
+        with open(f"experiments/data.txt", "w") as f:
             f.write(
                 f"{self.total_squared_correction_error/self.steps}; {self.total_squared_prediction_error/self.steps}\n"
                 f"{self.total_squared_correction_error_trajectory}\n"
@@ -140,26 +142,27 @@ class Environment(QWidget):
 
         p = QPixmap(self.size())
         self.render(p)
-        p.save("results/screenshot.jpg", "jpg")
-
+        p.save("experiments/screenshot.jpg", "jpg")
 
         exit()
 
+
 class TrackingWidget(QWidget):
 
-    def __init__(self, robot, parent: QWidget = None):
+    def __init__(self, robot, filter, parent: QWidget = None):
         super().__init__(parent)
 
         self.robot = robot
+        self.filter = filter
 
         hcenter = parent.width() * 0.5
         self.tracker_width = parent.width() * 0.5
-        self.tracker_height = 60
+        self.tracker_height = 90
         self.setGeometry(hcenter - 0.5 * self.tracker_width, 30, self.tracker_width, self.tracker_height)
 
         # VELOCITY
         self.indicators = QLabel(self)
-        self.indicators.setText(f"Velocity: {self.robot.v}\nRotation Velocity: {self.robot.w}")
+        self.update_indicators()
         self.indicators.setAlignment(QtCore.Qt.AlignCenter)
         self.indicators.setGeometry(0, 0, self.tracker_width, self.tracker_height)
         text_opacity = QGraphicsOpacityEffect(self)
@@ -181,4 +184,6 @@ class TrackingWidget(QWidget):
         qp.end()
 
     def update_indicators(self):
-        self.indicators.setText(f"Velocity: {round(self.robot.v, 1)}\nRotation Velocity: {round(self.robot.w, 1)}")
+        self.indicators.setText(f"Velocity: {round(self.robot.v, 2)}\n"
+                                f"Rotation Velocity: {round(self.robot.w, 2)}\n"
+                                f"Theta: {round(math.degrees(self.robot.theta))}; Kalman Gain: {round(self.filter.K_trace[-1], 6)}")

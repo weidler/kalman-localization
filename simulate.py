@@ -18,7 +18,7 @@ class App(QMainWindow):
 
         # WIDGETS
         self.environment_widget = Environment(self)
-        self.tracking_widget = TrackingWidget(self.environment_widget.robot, parent=self)
+        self.tracking_widget = TrackingWidget(self.environment_widget.robot, self.environment_widget.filter, parent=self)
 
         # ADD WIDGETS
         self.layout.addWidget(self.environment_widget)

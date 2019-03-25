@@ -24,9 +24,9 @@ class Kalman:
         self.u = numpy.matrix([[self.robot.v], [self.robot.w]], dtype='float')
 
         # STATE COVARIANCE ESTIMATE
-        self.sigma = numpy.diag((0.00001,
-                                 0.00001,
-                                 0.00001))
+        self.sigma = numpy.diag((SETTINGS["INITIAL_COVARIANCE"],
+                                 SETTINGS["INITIAL_COVARIANCE"],
+                                 SETTINGS["INITIAL_COVARIANCE"]))
         self.sigma_prediction = self.sigma.copy()
 
         # UNCONTROLLED TRANSITION MATRIX A
@@ -57,8 +57,7 @@ class Kalman:
         self.z = numpy.zeros((3, 1))
 
         # KALMAN GAIN
-        self.K = numpy.zeros((3, 3))
-        self.K_trace = []
+        self.K_trace = [0]
 
     @staticmethod
     def epsilon():
@@ -114,11 +113,13 @@ class Kalman:
                                [total_estimated_y / (n_landmarks or 1)],
                                [total_estimated_theta / (n_landmarks or 1)]], dtype='float') + self.delta()
 
+        # this is essentially the inverse of the predicted sigma + Q
+        # that is Sigma + R + Q
         inverse = numpy.linalg.pinv(self.C * self.sigma_prediction * self.C.transpose() + self.Q)
         # K is the influence of the difference between measurement and prediction
         K = self.sigma_prediction * self.C.transpose() * inverse
         self.K_trace.append(K.sum()/3)
         self.mu = self.mu_prediction + K * (self.z - self.C * self.mu_prediction)
-        self.sigma = (self.I - self.K * self.C) * self.sigma_prediction
+        self.sigma = (self.I - K * self.C) * self.sigma_prediction
 
         return self.mu
