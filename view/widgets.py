@@ -41,6 +41,7 @@ class Environment(QWidget):
 
         for x, y in itertools.product(range(200, SETTINGS["MAP_WIDTH"], 200), range(200, SETTINGS["MAP_HEIGHT"], 200)):
             self.map.add_beacon(Beacon(x, y))
+        # self.map.add_beacon(Beacon(SETTINGS["MAP_WIDTH"]*0.5, SETTINGS["MAP_HEIGHT"]*0.5))
 
         self.trace_smooth_level = SETTINGS["TRACE_SMOOTHING"]
 

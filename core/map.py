@@ -17,8 +17,10 @@ class Beacon:
 
     def bearing(self, x, y, heading):
         endpoint_heading = (x + math.cos(heading), y + math.sin(heading))
+
         vector_heading = numpy.array((x - endpoint_heading[0], y - endpoint_heading[1]))
         vector_heading = vector_heading/numpy.linalg.norm(vector_heading)
+
         vector_bearing = numpy.array((x - self.x, y - self.y))
         vector_bearing = vector_bearing/numpy.linalg.norm(vector_bearing)
 
@@ -30,7 +32,7 @@ class Beacon:
         #     (numpy.linalg.norm(vector_bearing) * numpy.linalg.norm(vector_heading))
         # )
 
-        return math.atan2(det, dotp)
+        return -math.atan2(det, dotp)
 
 
 class Map:

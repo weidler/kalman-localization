@@ -34,7 +34,7 @@ class Kalman:
 
         # CONTROL TRANSITION MATRIX B
         self.B = numpy.matrix([[Robot.DELTA_T * math.cos(self.robot.theta), 0],
-                               [Robot.DELTA_T * -math.sin(self.robot.theta), 0],
+                               [Robot.DELTA_T * math.sin(self.robot.theta), 0],
                                [0, Robot.DELTA_T]], dtype='float')
 
         # MOTION NOISE ESTIMATION
@@ -94,7 +94,7 @@ class Kalman:
         n_landmarks = len(in_range_beacons)
         total_estimated_x, total_estimated_y, total_estimated_theta = 0, 0, 0
         for i, beacon in enumerate(in_range_beacons):
-            estimated_x, estimated_y, estimated_theta = feature_based_measurement(int(self.mu[2]),
+            estimated_x, estimated_y, estimated_theta = feature_based_measurement(self.mu_prediction[2, 0],
                                                                                   beacon.x,
                                                                                   beacon.y,
                                                                                   beacon.distance_to(self.robot.x,
@@ -111,7 +111,7 @@ class Kalman:
         # average over landmarks
         self.z = numpy.matrix([[total_estimated_x / (n_landmarks or 1)],
                                [total_estimated_y / (n_landmarks or 1)],
-                               [total_estimated_theta / (n_landmarks or 1)]], dtype='float') + self.delta()
+                               [total_estimated_theta / (n_landmarks or 1)]], dtype='float') # + self.delta()
 
         # this is essentially the inverse of the predicted sigma + Q
         # that is Sigma + R + Q
@@ -119,7 +119,8 @@ class Kalman:
         # K is the influence of the difference between measurement and prediction
         K = self.sigma_prediction * self.C.transpose() * inverse
         self.K_trace.append(K.sum()/3)
+        K = 1
         self.mu = self.mu_prediction + K * (self.z - self.C * self.mu_prediction)
         self.sigma = (self.I - K * self.C) * self.sigma_prediction
 
-        return self.mu
+        return self.z

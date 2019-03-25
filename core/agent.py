@@ -45,8 +45,8 @@ class Robot:
     def velocity_based_model(self):
         self.theta = self.theta % (2 * math.pi)
         out = numpy.matrix([[self.x], [self.y], [self.theta]]) \
-            + numpy.matrix([[Robot.DELTA_T * math.cos(self.theta), 0], \
-                            [Robot.DELTA_T * math.sin(self.theta), 0], \
+            + numpy.matrix([[Robot.DELTA_T * math.cos(self.theta), 0],
+                            [Robot.DELTA_T * math.sin(self.theta), 0],
                             [0, Robot.DELTA_T]])  \
             * numpy.matrix([[self.v], [self.w]])
         self.x = out[0, 0]

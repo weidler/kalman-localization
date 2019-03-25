@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QColor
 
-SETTINGS = {"DELTA_T": 0.1,
+SETTINGS = {"DELTA_T": 0.01,
             "BEACON_INDICATOR_DISTANCE": 300,
             "TRACE_SMOOTHING": 1,
             "DISTANCE_BETWEEN_COV_CIRCLES": 200,
@@ -8,7 +8,7 @@ SETTINGS = {"DELTA_T": 0.1,
             "INITIAL_COVARIANCE": 0.000001,
 
             "MOTION_NOISE": 0.01,
-            "MOTION_NOISE_ESTIMATION": 0.0001,
+            "MOTION_NOISE_ESTIMATION": 0.00001,
 
             "SENSOR_NOISE": 0.004,
             "SENSOR_NOISE_ESTIMATION": 0.001,
@@ -23,7 +23,7 @@ SETTINGS = {"DELTA_T": 0.1,
 
             "MAP_WIDTH": 1600,
             "MAP_HEIGHT": 1000,
-            "MAP_START": (400, 500),
+            "MAP_START": (600, 500),
 
             "ROBOT_RADIUS": 30,
 
