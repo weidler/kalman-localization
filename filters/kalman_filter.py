@@ -10,11 +10,11 @@ from numpy.random import uniform as uni
 
 numpy.random.seed(10000)
 
+
 class Kalman:
 
     def __init__(self, robot: Robot):
         self.robot: Robot = robot
-        self.step_counter = 0
 
         # STATE MU
         self.mu = numpy.matrix([[self.robot.x], [self.robot.y], [self.robot.theta]], dtype='float')
@@ -24,9 +24,9 @@ class Kalman:
         self.u = numpy.matrix([[self.robot.v], [self.robot.w]], dtype='float')
 
         # STATE COVARIANCE ESTIMATE
-        self.sigma = numpy.diag((0.0001,
-                                 0.0001,
-                                 0.0001))
+        self.sigma = numpy.diag((0.00001,
+                                 0.00001,
+                                 0.00001))
         self.sigma_prediction = self.sigma.copy()
 
         # UNCONTROLLED TRANSITION MATRIX A
@@ -37,10 +37,10 @@ class Kalman:
                                [Robot.DELTA_T * -math.sin(self.robot.theta), 0],
                                [0, Robot.DELTA_T]], dtype='float')
 
-        # MOTION NOISE
-        self.R = numpy.matrix([[uni(0, SETTINGS["MOTION_NOISE"]), 0, 0],
-                               [0, uni(0, SETTINGS["MOTION_NOISE"]), 0],
-                               [0, 0, uni(0, SETTINGS["MOTION_NOISE"])]], dtype='float')
+        # MOTION NOISE ESTIMATION
+        self.R = numpy.matrix([[uni(0, SETTINGS["MOTION_NOISE_ESTIMATION"]), 0, 0],
+                               [0, uni(0, SETTINGS["MOTION_NOISE_ESTIMATION"]), 0],
+                               [0, 0, uni(0, SETTINGS["MOTION_NOISE_ESTIMATION"])]], dtype='float')
 
         # MAPPING STATES TO OBSERVATIONS
         self.C = numpy.identity(3)
@@ -48,28 +48,29 @@ class Kalman:
         # IDENTITY MATRIX
         self.I = numpy.identity(3)
 
-        # SENSOR NOISE
-        self.Q = numpy.matrix([[uni(0, SETTINGS["SENSOR_NOISE"]), 0, 0],
-                               [0, uni(0, SETTINGS["SENSOR_NOISE"]), 0],
-                               [0, 0, uni(0, SETTINGS["SENSOR_NOISE"])]], dtype='float')
+        # SENSOR NOISE ESTIMATION
+        self.Q = numpy.matrix([[uni(0, SETTINGS["SENSOR_NOISE_ESTIMATION"]), 0, 0],
+                               [0, uni(0, SETTINGS["SENSOR_NOISE_ESTIMATION"]), 0],
+                               [0, 0, uni(0, SETTINGS["SENSOR_NOISE_ESTIMATION"])]], dtype='float')
 
         # STATE ESTIMATED FROM SENSOR DATA
         self.z = numpy.zeros((3, 1))
 
         # KALMAN GAIN
         self.K = numpy.zeros((3, 3))
-
-    @staticmethod
-    def delta():
-        return numpy.matrix([[numpy.random.normal(0, SETTINGS["SENSOR_NOISE"])],
-                             [numpy.random.normal(0, SETTINGS["SENSOR_NOISE"])],
-                             [numpy.random.normal(0, SETTINGS["SENSOR_NOISE"])]], dtype='float')
+        self.K_trace = []
 
     @staticmethod
     def epsilon():
         return numpy.matrix([[numpy.random.normal(0, SETTINGS["MOTION_NOISE"])],
                              [numpy.random.normal(0, SETTINGS["MOTION_NOISE"])],
                              [numpy.random.normal(0, SETTINGS["MOTION_NOISE"])]], dtype='float')
+
+    @staticmethod
+    def delta():
+        return numpy.matrix([[numpy.random.normal(0, SETTINGS["SENSOR_NOISE"])],
+                             [numpy.random.normal(0, SETTINGS["SENSOR_NOISE"])],
+                             [numpy.random.normal(0, SETTINGS["SENSOR_NOISE"])]], dtype='float')
 
     def prediction(self):
         # update u
@@ -80,12 +81,11 @@ class Kalman:
                                [Robot.DELTA_T * math.sin(self.mu[2]), 0],
                                [0, Robot.DELTA_T]], dtype='float')
 
-        # estimate mu based on motion model, TODO noise
+        # estimate mu based on motion model
         self.mu_prediction = self.A * self.mu + self.B * self.u + self.epsilon()
 
         # estimate sigma
         self.sigma_prediction = self.A * self.sigma * numpy.transpose(self.A) + self.R
-        self.step_counter += 1
 
         return self.mu_prediction
 
@@ -117,7 +117,7 @@ class Kalman:
         inverse = numpy.linalg.pinv(self.C * self.sigma_prediction * self.C.transpose() + self.Q)
         # K is the influence of the difference between measurement and prediction
         K = self.sigma_prediction * self.C.transpose() * inverse
-        print(K.sum()/3)
+        self.K_trace.append(K.sum()/3)
         self.mu = self.mu_prediction + K * (self.z - self.C * self.mu_prediction)
         self.sigma = (self.I - self.K * self.C) * self.sigma_prediction
 

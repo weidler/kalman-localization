@@ -4,7 +4,7 @@ import itertools
 import numpy
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtGui import QPainterPath, QPainter, QPen
+from PyQt5.QtGui import QPainterPath, QPainter, QPen, QPixmap
 from PyQt5.QtWidgets import QWidget, QLabel, QGraphicsOpacityEffect
 
 from filters.kalman_filter import Kalman
@@ -23,6 +23,12 @@ class Environment(QWidget):
 
         self.map = Map(SETTINGS["MAP_WIDTH"], SETTINGS["MAP_HEIGHT"])
         self.robot = Robot(SETTINGS["ROBOT_RADIUS"], self.map)
+
+        # SET UP ROBOT FOR POTENTIAL EXPERIMENT
+        self.robot.v = SETTINGS["ROBOT_START_V"]
+        self.robot.w = SETTINGS["ROBOT_START_W"]
+        self.experiment_length = SETTINGS["EXPERIMENT_LENGTH"]
+
         self.filter = Kalman(self.robot)
 
         self.trace = QPainterPath()
@@ -82,13 +88,7 @@ class Environment(QWidget):
 
         # STOP
         if e.key() == QtCore.Qt.Key_Escape:
-            with open(f"results/experiment.txt", "w") as f:
-                f.write(
-                    f"{self.total_squared_correction_error/self.steps}; {self.total_squared_prediction_error/self.steps}\n"
-                    f"{self.total_squared_correction_error_trajectory}\n"
-                    f"{self.total_squared_prediction_error_trajectory}"
-                )
-            exit()
+            self.finish()
 
     def animate(self):
         self.robot.velocity_based_model()
@@ -126,6 +126,24 @@ class Environment(QWidget):
 
         self.steps += 1
 
+        if self.experiment_length is not None and self.steps >= self.experiment_length:
+            self.finish()
+
+    def finish(self):
+        with open(f"results/experiment.txt", "w") as f:
+            f.write(
+                f"{self.total_squared_correction_error/self.steps}; {self.total_squared_prediction_error/self.steps}\n"
+                f"{self.total_squared_correction_error_trajectory}\n"
+                f"{self.total_squared_prediction_error_trajectory}\n"
+                f"{self.filter.K_trace}"
+            )
+
+        p = QPixmap(self.size())
+        self.render(p)
+        p.save("results/screenshot.jpg", "jpg")
+
+
+        exit()
 
 class TrackingWidget(QWidget):
 

@@ -113,6 +113,14 @@ def draw_filter_covariance_ellipse(painter: QPainter, x, y, cov_x, cov_y, headin
     painter.translate(x, y)
     painter.rotate(heading)
 
+    # scaling
+    cov_x *= SETTINGS["COV_SCALING"]
+    cov_y *= SETTINGS["COV_SCALING"]
+
+    print(cov_y)
+    print(cov_x)
+    print()
+
     rect = QtCore.QRect(-cov_x / 2, - cov_y / 2, cov_x, cov_y)
     painter.drawEllipse(rect)
 
