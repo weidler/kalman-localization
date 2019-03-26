@@ -2,7 +2,7 @@ import math
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt, QRectF
-from PyQt5.QtGui import QPainter, QPen, QPainterPath, QFont, QBrush, QImage
+from PyQt5.QtGui import QPainter, QPen, QPainterPath, QFont
 
 from core.agent import Robot
 from settings import SETTINGS

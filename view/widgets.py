@@ -1,4 +1,3 @@
-import datetime
 import itertools
 import math
 
@@ -8,9 +7,9 @@ from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QPainterPath, QPainter, QPen, QPixmap
 from PyQt5.QtWidgets import QWidget, QLabel, QGraphicsOpacityEffect
 
-from filters.kalman_filter import Kalman
 from core.agent import Robot
 from core.map import Map, Beacon
+from filters.kalman_filter import Kalman
 from settings import SETTINGS
 from view.drawer import draw_beacon_indicators, draw_beacons, draw_trace, draw_filter_trace, \
     draw_filter_covariance_ellipse, draw_robot
@@ -114,13 +113,16 @@ class Environment(QWidget):
         # COVARIANCE CIRCLES
         if self.trace.length() - (len(self.covariance_ellipses) * SETTINGS["DISTANCE_BETWEEN_COV_CIRCLES"]) >= SETTINGS[
             "DISTANCE_BETWEEN_COV_CIRCLES"]:
-            self.covariance_ellipses.append((self.filter.mu[0], self.filter.mu[1], self.filter.sigma[0, 0], self.filter.sigma[1, 1], self.filter.mu[2]))
+            self.covariance_ellipses.append((self.filter.mu[0], self.filter.mu[1], self.filter.sigma[0, 0],
+                                             self.filter.sigma[1, 1], self.filter.mu[2]))
 
         self.update()
 
         # STATISTICS
-        correction_squared_error = numpy.linalg.norm(numpy.asarray(correction[0:2].transpose()).squeeze() - numpy.array((self.robot.x, self.robot.y)))
-        prediction_squared_error = numpy.linalg.norm(numpy.asarray(prediction[0:2].transpose()).squeeze() - numpy.array((self.robot.x, self.robot.y)))
+        correction_squared_error = numpy.linalg.norm(
+            numpy.asarray(correction[0:2].transpose()).squeeze() - numpy.array((self.robot.x, self.robot.y)))
+        prediction_squared_error = numpy.linalg.norm(
+            numpy.asarray(prediction[0:2].transpose()).squeeze() - numpy.array((self.robot.x, self.robot.y)))
 
         self.total_squared_correction_error += correction_squared_error
         self.total_squared_prediction_error += prediction_squared_error
