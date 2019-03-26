@@ -187,4 +187,5 @@ class TrackingWidget(QWidget):
     def update_indicators(self):
         self.indicators.setText(f"Velocity: {round(self.robot.v, 2)}\n"
                                 f"Rotation Velocity: {round(self.robot.w, 2)}\n"
-                                f"Theta: {round(math.degrees(self.robot.theta))}; Kalman Gain: {round(self.filter.K_trace[-1], 6)}")
+                                f"Theta: {round(math.degrees(self.robot.theta))}; Kalman Gain: {round(self.filter.K_trace[-1], 6)}\n"
+                                f"Time Steps: {self.parent().environment_widget.steps}")

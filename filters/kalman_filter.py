@@ -63,7 +63,7 @@ class Kalman:
     def epsilon():
         return numpy.matrix([[numpy.random.normal(0, SETTINGS["MOTION_NOISE"])],
                              [numpy.random.normal(0, SETTINGS["MOTION_NOISE"])],
-                             [numpy.random.normal(0, SETTINGS["MOTION_NOISE"])]], dtype='float')
+                             [numpy.random.normal(0, SETTINGS["MOTION_THETA_NOISE"])]], dtype='float')
 
     @staticmethod
     def delta():
@@ -102,14 +102,17 @@ class Kalman:
                                                                                   beacon.bearing(self.robot.x,
                                                                                                  self.robot.y,
                                                                                                  self.robot.theta))
-            total_estimated_x += estimated_x
-            total_estimated_y += estimated_y
+
+            noise = self.delta()
+
+            total_estimated_x += estimated_x + noise[0, 0]
+            total_estimated_y += estimated_y + noise[1, 0]
             total_estimated_theta += estimated_theta
 
         # average over landmarks
         self.z = numpy.matrix([[total_estimated_x / (n_landmarks or 1)],
                                [total_estimated_y / (n_landmarks or 1)],
-                               [total_estimated_theta / (n_landmarks or 1)]], dtype='float') # + self.delta()
+                               [total_estimated_theta / (n_landmarks or 1)]], dtype='float')
 
         # this is essentially the inverse of the predicted sigma + Q
         # that is Sigma + R + Q
