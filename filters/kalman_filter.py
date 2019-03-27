@@ -60,16 +60,9 @@ class Kalman:
         self.K_trace = [0]
 
     @staticmethod
-    def epsilon():
-        return numpy.matrix([[numpy.random.normal(0, SETTINGS["MOTION_NOISE"])],
-                             [numpy.random.normal(0, SETTINGS["MOTION_NOISE"])],
-                             [numpy.random.normal(0, SETTINGS["MOTION_THETA_NOISE"])]], dtype='float')
-
-    @staticmethod
     def delta():
-        return numpy.matrix([[numpy.random.normal(0, SETTINGS["SENSOR_NOISE"])],
-                             [numpy.random.normal(0, SETTINGS["SENSOR_NOISE"])],
-                             [numpy.random.normal(0, SETTINGS["SENSOR_NOISE"])]], dtype='float')
+        return numpy.matrix([[numpy.random.normal(0, SETTINGS["SENSOR_DISTANCE_NOISE"])],
+                             [numpy.random.normal(0, SETTINGS["SENSOR_BEARING_NOISE"])]], dtype='float')
 
     def prediction(self):
         # update u
@@ -81,7 +74,7 @@ class Kalman:
                                [0, Robot.DELTA_T]], dtype='float')
 
         # estimate mu based on motion model
-        self.mu_prediction = self.A * self.mu + self.B * self.u + self.epsilon()
+        self.mu_prediction = self.A * self.mu + self.B * self.u
 
         # estimate sigma
         self.sigma_prediction = self.A * self.sigma * numpy.transpose(self.A) + self.R
@@ -94,6 +87,7 @@ class Kalman:
         n_landmarks = len(in_range_beacons)
         total_estimated_x, total_estimated_y, total_estimated_theta = 0, 0, 0
         for i, beacon in enumerate(in_range_beacons):
+            beacon_noise = self.delta()
             estimated_x, estimated_y, estimated_theta = feature_based_measurement(self.mu_prediction[2, 0],
                                                                                   beacon.x,
                                                                                   beacon.y,
@@ -101,12 +95,14 @@ class Kalman:
                                                                                                      self.robot.y),
                                                                                   beacon.bearing(self.robot.x,
                                                                                                  self.robot.y,
-                                                                                                 self.robot.theta))
+                                                                                                 self.robot.theta),
+                                                                                  beacon_noise[0, 0],
+                                                                                  beacon_noise[1, 0])
 
             noise = self.delta()
 
-            total_estimated_x += estimated_x + noise[0, 0]
-            total_estimated_y += estimated_y + noise[1, 0]
+            total_estimated_x += estimated_x
+            total_estimated_y += estimated_y
             total_estimated_theta += estimated_theta
 
         # average over landmarks

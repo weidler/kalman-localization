@@ -7,14 +7,15 @@ SETTINGS = {"DELTA_T": 0.05,
 
             "INITIAL_COVARIANCE": 0.001,
 
-            "MOTION_NOISE": 5,
-            "MOTION_THETA_NOISE": 0.001,
             "MOTION_NOISE_ESTIMATION": 0.01,
+            "V_NOISE": 3,
+            "W_NOISE": 0.01,
 
-            "SENSOR_NOISE": 25,
+            "SENSOR_DISTANCE_NOISE": 10,
+            "SENSOR_BEARING_NOISE": 0.1,
             "SENSOR_NOISE_ESTIMATION": 0.2,
 
-            "COV_SCALING": 200,
+            "COV_SCALING": 1,
 
             "COLOR_ROBOT": QColor(),
             "COLOR_BEACON": QColor(),
