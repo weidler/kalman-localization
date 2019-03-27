@@ -120,6 +120,10 @@ class Kalman:
         # K is the influence of the difference between measurement and prediction
         K = self.sigma_prediction * self.C.transpose() * inverse
         self.K_trace.append(K.sum()/3)
+
+        if n_landmarks == 0:
+            K = 0
+
         self.mu = self.mu_prediction + K * (self.z - self.C * self.mu_prediction)
         self.sigma = (self.I - K * self.C) * self.sigma_prediction
 

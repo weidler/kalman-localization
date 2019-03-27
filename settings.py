@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QColor
 
 SETTINGS = {"DELTA_T": 0.05,
-            "BEACON_INDICATOR_DISTANCE": 300,
+            "BEACON_INDICATOR_DISTANCE": 80,
             "TRACE_SMOOTHING": 1,
             "DISTANCE_BETWEEN_COV_CIRCLES": 200,
 
@@ -14,7 +14,7 @@ SETTINGS = {"DELTA_T": 0.05,
             "SENSOR_NOISE": 25,
             "SENSOR_NOISE_ESTIMATION": 0.2,
 
-            "COV_SCALING": 2000,
+            "COV_SCALING": 200,
 
             "COLOR_ROBOT": QColor(),
             "COLOR_BEACON": QColor(),
